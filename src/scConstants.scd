@@ -9,8 +9,9 @@ dict.put(\instBtnColor,
 ));
 dict.put(\menuColor, Color.grey(0.7));
 dict.put(\instListBackground, Color.grey(0.6));
-dict.put(\newInstFont, Font("Monaco", 16));
+dict.put(\instFont, Font("Monaco", 16));
 dict.put(\mainWidth, 500);
 dict.put(\mainHeight, 500);
+dict.put(\allSynthDefPath, (~path ++ "synthDefinitions"));
 
 dict;

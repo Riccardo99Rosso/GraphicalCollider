@@ -1,6 +1,6 @@
 (
 var mainWin, userView, scrollView;
-var scConstants, scWebView, srcPath,
+var scConstants, scWebView, srcPath, scSynthDef,
 newInstBtn, deleteInstBtn, moveBeforeInstBtn,
 moveAfterInstBtn, instList;
 
@@ -13,8 +13,10 @@ moveAfterInstBtn, instList;
 ~path = thisProcess.nowExecutingPath.replace("Main.scd", "");
 srcPath = ~path +/+ "src";
 ~scConstantsPath =  srcPath +/+ "scConstants.scd";
+~scSynthDef = srcPath +/+ "scSynthDef.scd";
 ~scWebView = srcPath +/+ "scWebView.scd";
 scConstants = FileLoader(~scConstantsPath);
+scSynthDef = FileLoader(~scSynthDef);
 scWebView = FileLoader(~scWebView);
 
 /*** GUI GENERATIONS ***/
@@ -55,6 +57,15 @@ mainWin.layout_(
 					.font_(scConstants[\menuFont]),
 				).front;
 			}).font_(scConstants[\menuFont]),
+			MenuAction("Edit",{
+				Menu(
+					MenuAction("SynthDef Instruments", {
+						scSynthDef[\synthDefList].();
+					}).font_(scConstants[\menuFont]),
+					MenuAction("Algorithmic Instruments", {
+					}).font_(scConstants[\menuFont])
+				).front
+			}).font_(scConstants[\menuFont]),
 			MenuAction("Help",{
 				Menu(
 					MenuAction("About this project", {
@@ -70,7 +81,8 @@ mainWin.layout_(
 userView.drawFunc = {
 };
 
-newInstBtn = Button(userView, Rect(37.5, 50, 100, 50))
+newInstBtn = Button(userView, Rect(37.5, 50, 150, 50))
+.font_(scConstants[\instFont])
 .states_([["New Instrument", Color.black, scConstants[\instBtnColor]]])
 .action = {
 	var win, view, tField, width=100, height=40;
@@ -89,16 +101,19 @@ newInstBtn = Button(userView, Rect(37.5, 50, 100, 50))
 }
 ;
 
-deleteInstBtn = Button(userView, Rect(37.5, 125, 100, 50))
+deleteInstBtn = Button(userView, Rect(37.5, 125, 150, 50))
+.font_(scConstants[\instFont])
 .states_([["Delete Instrument", Color.black, scConstants[\instBtnColor]]]);
 
-moveBeforeInstBtn = Button(userView, Rect(37.5, 200, 100, 50))
+moveBeforeInstBtn = Button(userView, Rect(37.5, 200, 150, 50))
+.font_(scConstants[\instFont])
 .states_([["Move Before", Color.black, scConstants[\instBtnColor]]]);
 
-moveAfterInstBtn = Button(userView, Rect(37.5, 275, 100, 50))
+moveAfterInstBtn = Button(userView, Rect(37.5, 275, 150, 50))
+.font_(scConstants[\instFont])
 .states_([["Move After", Color.black, scConstants[\instBtnColor]]]);
 
-instList = ListView(userView, Rect(180,50,400,600))
+instList = ListView(userView, Rect(230,50,400,600))
 .background_(scConstants[\instListBackground]);
 
 )
