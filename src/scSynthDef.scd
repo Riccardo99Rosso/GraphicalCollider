@@ -1,5 +1,25 @@
 var dict = Dictionary();
-var scDict, synthDefList;
+var scDict, synthDefList, snippet, loadAll;
+
+snippet = {
+	arg name="";
+	var text;
+
+	text = "(
+/*
+Description:
+
+*/
+
+SynthDef(\\" ++ name ++ ", {
+
+//insert your code here
+
+}).add;
+)";
+
+	text;
+};
 
 scDict = FileLoader(~scConstantsPath);
 
@@ -13,12 +33,12 @@ synthDefList = {
 	createSynthDef = {
 		arg name="UntitledSynthDef", editName = false;
 		var sName;
-		var view = View()/*.background_(scDict[\synthColor])*/.layout_(
+		var view = View().background_(scDict[\synthColor]).layout_(
 			HLayout(
 				sName = TextField()
 				.string_(name)
-				.enabled_(editName),
-				//.font_(scDict[\synthFont]),
+				.enabled_(editName)
+				.font_(scDict[\synthFont]),
 				Button().states_([["Code"]]).action_({
 					var file, path, code, tView, tWin;
 
@@ -31,18 +51,18 @@ synthDefList = {
 							code = file.readAllString;
 						},
 						{
-							code = "";
+							code = snippet.(sName.string);
 						}
 					);
 					file.close;
 
-					tWin = Window(sName.string, Rect(800, 350, 300, 350), false);
+					tWin = Window(sName.string, Rect(800, 350, 500, 400));
 					tView = TextView(tWin, Rect(
 						0,
 						0,
 						tWin.bounds.width,
 						tWin.bounds.height))
-					//.font_(scDict[\synthFont])
+					.font_(scDict[\menuFont])
 					.string_(code)
 					.palette_(QPalette.dark);  // set all colors here
 
@@ -60,6 +80,9 @@ synthDefList = {
 						).margins_(0).spacing_(0);
 					);
 
+					tWin.onClose = {
+						loadAll.();
+					};
 
 					tWin.front.alwaysOnTop_(true);
 
@@ -102,6 +125,27 @@ synthDefList = {
 	);
 };
 
+loadAll = {
+	~synthDefs = [];
+	PathName(scDict[\allSynthDefPath])
+	.entries.collect({
+		arg sf;
+		var file, synthDef, name, buffer;
+
+		sf = sf.fullPath;
+		synthDef = File(sf.standardizePath, "r");
+		file = synthDef.readAllString;
+		this.interpret(file);
+
+		sf = sf.replace(".scd", "");
+		buffer = sf.split($\\);
+		name = buffer[(buffer.size - 1)];
+		~synthDefs = ~synthDefs.add(name);
+		synthDef.close;
+	});
+};
+
 dict.put(\synthDefList, synthDefList);
+dict.put(\loadAll, loadAll);
 
 dict;
