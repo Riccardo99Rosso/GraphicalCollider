@@ -67,8 +67,10 @@ mainWin.layout_(
 					MenuAction("SynthDef Instruments", {
 						scSynthDef[\synthDefList].();
 					}).font_(scConstants[\menuFont]),
+					/*
 					MenuAction("Algorithmic Instruments", {
 					}).font_(scConstants[\menuFont]),
+					*/
 					MenuAction("Midi", {
 						midiOn = midiOn.not;
 						if((midiOn == true),
@@ -84,7 +86,34 @@ mainWin.layout_(
 						);
 						midiButton.visible_(midiOn);
 					}).checked_(midiOn)
-					.font_(scConstants[\menuFont])
+					.font_(scConstants[\menuFont]),
+					MenuAction("Midi Numbers", {
+						var win, midiNum, name;
+
+						win = Window("Midi Nums",
+							Rect(200, Window.screenBounds.height - 200, 100, 100)
+						).front.alwaysOnTop_(true);
+
+						name = \midiCheck;
+
+						midiNum = StaticText(win, Rect(50, 50, 50, 20))
+						.string_("0")
+						.font_(scConstants[\menuFont]);
+
+						MIDIdef.cc(name, {
+							arg ...args;
+							var val;
+							val = args[1];
+							{
+								midiNum.string_(val);
+							}.defer;
+						}, (0..500));
+
+						win.onClose = {
+							MIDIdef(name).free;
+						};
+
+					}).font_(scConstants[\menuFont]),
 				).front
 			}).font_(scConstants[\menuFont]),
 			MenuAction("Audio",{
