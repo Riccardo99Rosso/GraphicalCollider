@@ -697,22 +697,6 @@ open = {
 
 
 
-(
-scFileManager[\openFile].(
-	instList,
-	synthPupUpMenu,
-	argValue,
-	newSynthBtn,
-	minSlider,
-	maxSlider
-);
-)
-
-
-
-
-
-
 
 
 

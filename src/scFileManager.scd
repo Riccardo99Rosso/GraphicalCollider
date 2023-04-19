@@ -5,7 +5,7 @@ scConstants = FileLoader(~scConstantsPath);
 
 saveFile = {
 	arg path, midiDefs;
-	var file, name, buffer, tmpGroups, maxId = 0;
+	var file, name, buffer, tmpGroups, maxId = 0, midiMap;
 
 	path = path.replace(".gc", "");
 	path = path ++ ".gc";
@@ -14,16 +14,12 @@ saveFile = {
 	name = buffer[(buffer.size - 1)];
 
 	tmpGroups = ~groups;
-
-	tmpGroups.collect({
+	tmpGroups.do({
 		arg item, i;
-		item[0] = nil;
-		item[5].postln;
 		if(item[5] > maxId){
 			maxId = item[5];
 		};
 	});
-	midiDefs.postln;
 	file = File(path.standardizePath, "w");
 	file.write(tmpGroups.asCompileString.replace("true", "false"));
 	file.write("\n");
@@ -31,6 +27,7 @@ saveFile = {
 	file.write("\n");
 	file.write(midiDefs.asCompileString);
 	file.close;
+	midiMap = midiDefs;
 
 	[name];
 };
